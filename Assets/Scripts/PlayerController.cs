@@ -35,7 +35,7 @@ public class PlayerController : MonoBehaviour
         if (speed > maxSpeed) speed = maxSpeed;
 
         myRigidBody.MovePosition(
-            transform.position + change.normalized * speed * Time.deltaTime
+            transform.position + transform.rotation * change.normalized * speed * Time.deltaTime
         );
     }
 }
