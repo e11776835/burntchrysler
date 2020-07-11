@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 
-public class SpawnPositionComponent: MonoBehaviour
+[SelectionBase]
+public class SpawnPositionComponent : MonoBehaviour
 {
-
+    public bool SpawnsPowerup = true;
+    public bool SpawnsEnemy = true;
 }
