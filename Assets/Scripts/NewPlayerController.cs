@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using TMPro;
 using UnityEngine;
 
@@ -15,8 +16,18 @@ public class NewPlayerController : MonoBehaviour
         Friction;
     public KeyCode BoostKey;
 
-    public Vector3 input;
-    Rigidbody _rb;
+    [SerializeField] private float _drunk;
+    private Vector3 _input;
+    private Rigidbody _rb;
+    [SerializeField] private Healthbar Fartbar;
+    [Tooltip("Affects how intense drunk velocity changes will be")]
+    [SerializeField] private AnimationCurve DrunkenessVelocityIntensity;
+    [Tooltip("Multiplies the animation curve times")]
+    [SerializeField] private int DrunkenessVelocityMultiplier;
+    [Tooltip("How much time there is between velocity changes")]
+    [SerializeField] private AnimationCurve DrunkenessTimeProbability;
+    [Tooltip("Multiplies the animation curve times")]
+    [SerializeField] private int DrunkenessTimeMultiplier;
 
     public Healthbar FartJuice;
     public Healthbar FartCooldown;
@@ -33,6 +44,7 @@ public class NewPlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+
         // LOSE CONDITION: fartmeter is filled up, shitting your pants
         if (FartJuice.health >= FartJuice.maximumHealth)
         {
@@ -46,18 +58,58 @@ public class NewPlayerController : MonoBehaviour
             Time.timeScale = 0.0f;
         }
 
+
+        DrunkMovement();
         ApplyFriction();
-        input = new Vector3(
+        _input = new Vector3(
             -Input.GetAxisRaw("Horizontal"),
             0,
             -Input.GetAxisRaw("Vertical"));
 
-        if (input != Vector3.zero)
+        if (_input != Vector3.zero)
         {
-            Move(input, Input.GetKey(BoostKey));
+            Move(_input, Input.GetKey(BoostKey));
         }
         RestrictZLocation();
         RestrictVelocity();
+    }
+
+    private Coroutine _drunkVelocityCoroutine;
+
+    /// <summary>
+    /// Changes the velocity at random intervals in random directions
+    /// </summary>
+    private void DrunkMovement()
+    {
+        if(_drunkVelocityCoroutine == null)
+        {
+            _drunkVelocityCoroutine = StartCoroutine(DrunkVelocityChange());
+        }
+    }
+
+    private IEnumerator DrunkVelocityChange()
+    {
+        Debug.Log("Changing velocity!");
+        var startTime = Time.time;
+        var duration = 0.2f;
+        float timeUntilNext = DrunkenessTimeProbability.Evaluate(_drunk) * DrunkenessTimeMultiplier;
+        var nextVelocityTime = startTime + timeUntilNext;
+        var beforeVel = _rb.velocity;
+        var direction = UnityEngine.Random.insideUnitCircle;
+        //Velocity will always be on right side of bert (x-)
+        direction.x = Mathf.Abs(direction.x) * -1;
+        var intensity = DrunkenessVelocityIntensity.Evaluate(_drunk) * DrunkenessVelocityMultiplier;
+        direction *= intensity;
+        for (float timer = duration; timer >= 0; timer -= Time.deltaTime)
+        {
+            _rb.velocity = Vector3.Lerp(beforeVel, direction, Time.deltaTime);
+            yield return new WaitForFixedUpdate();
+        }
+        while (Time.time < nextVelocityTime)
+        {
+            //check next timer every .5 secs
+            yield return new WaitForSeconds(.5f);
+        } 
     }
 
     private void ApplyFriction()
