@@ -7,15 +7,16 @@ public class NewPlayerController : MonoBehaviour
 {
     [Tooltip("Min and max value of the player's position.z value ")]
     public Vector2 ZLocationMinMax;
-    public float 
-        Force, 
-        BoostForce, 
-        StartSpeed = 0, 
-        MaxSpeed = 10, 
+    public float
+        Force,
+        BoostForce,
+        StartSpeed = 0,
+        MaxSpeed = 10,
+        BoostSpeedMaxSpeedMultiplier = 1.2f,
         MaxZSpeed = 10, 
-        Friction;
+        Friction = 10;
     public KeyCode BoostKey;
-
+    [Range(0,1)]
     [SerializeField] private float _drunk;
     private Vector3 _input;
     private Rigidbody _rb;
@@ -66,15 +67,13 @@ public class NewPlayerController : MonoBehaviour
             0,
             -Input.GetAxisRaw("Vertical"));
 
-        if (_input != Vector3.zero)
-        {
-            Move(_input, Input.GetKey(BoostKey));
-        }
+        Move(_input, Input.GetKey(BoostKey));
         RestrictZLocation();
         RestrictVelocity();
     }
 
     private Coroutine _drunkVelocityCoroutine;
+    public float HorizontalDrunkIntensity = 1, VerticalDrunkIntensity = .2f;
 
     /// <summary>
     /// Changes the velocity at random intervals in random directions
@@ -89,27 +88,26 @@ public class NewPlayerController : MonoBehaviour
 
     private IEnumerator DrunkVelocityChange()
     {
-        Debug.Log("Changing velocity!");
         var startTime = Time.time;
-        var duration = 0.2f;
         float timeUntilNext = DrunkenessTimeProbability.Evaluate(_drunk) * DrunkenessTimeMultiplier;
+        timeUntilNext = UnityEngine.Random.Range(timeUntilNext, DrunkenessTimeMultiplier);
         var nextVelocityTime = startTime + timeUntilNext;
         var beforeVel = _rb.velocity;
         var direction = UnityEngine.Random.insideUnitCircle;
         //Velocity will always be on right side of bert (x-)
         direction.x = Mathf.Abs(direction.x) * -1;
+        direction = Vector2.Scale(direction, new Vector2(HorizontalDrunkIntensity, VerticalDrunkIntensity));
+        Debug.Log($"Changing velocity in direction: {direction}");
         var intensity = DrunkenessVelocityIntensity.Evaluate(_drunk) * DrunkenessVelocityMultiplier;
         direction *= intensity;
-        for (float timer = duration; timer >= 0; timer -= Time.deltaTime)
-        {
-            _rb.velocity = Vector3.Lerp(beforeVel, direction, Time.deltaTime);
-            yield return new WaitForFixedUpdate();
-        }
+        Vector3 newVel = new Vector3(direction.x, 0, direction.y);
+        _rb.AddForce(newVel * 100);
         while (Time.time < nextVelocityTime)
         {
             //check next timer every .5 secs
             yield return new WaitForSeconds(.5f);
-        } 
+        }
+        _drunkVelocityCoroutine = StartCoroutine(DrunkVelocityChange());
     }
 
     private void ApplyFriction()
@@ -123,6 +121,7 @@ public class NewPlayerController : MonoBehaviour
     {
         Debug.Log($"Moving: {direction}");
         float boostFactor = 1;
+        
 
         // if fartbar is lower than 5/100, no boost possible
         if (boost && FartJuice.health >= 5)
@@ -132,7 +131,10 @@ public class NewPlayerController : MonoBehaviour
             FartCooldown.SetHealth(FartCooldown.health + FartCooldownFactor); // fill up cooldown bar by boosting
         }
 
-        _rb.AddForce(direction * Force * Time.deltaTime * boostFactor, ForceMode.Acceleration);
+        Vector3 movementForce = direction * Force * Time.deltaTime;
+        movementForce = Vector3.Scale(movementForce, new Vector3(boostFactor, 0, 1));
+        
+        _rb.AddForce(movementForce, ForceMode.Force);
     }
 
     private void RestrictZLocation()

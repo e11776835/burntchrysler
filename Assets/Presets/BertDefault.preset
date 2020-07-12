@@ -39,7 +39,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: BoostForce
-    value: 10
+    value: 27.27
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: StartSpeed
@@ -48,6 +48,10 @@ Preset:
   - target: {fileID: 0}
     propertyPath: MaxSpeed
     value: 3
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: BoostSpeedMaxSpeedMultiplier
+    value: 9.25
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: MaxZSpeed
@@ -71,6 +75,70 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[0].time
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[0].value
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[0].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[0].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[0].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[0].inWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[0].outWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[1].time
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[1].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[1].inSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[1].outSlope
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[1].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[1].inWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.data[1].outWeight
     value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
@@ -86,7 +154,75 @@ Preset:
     value: 4
     objectReference: {fileID: 0}
   - target: {fileID: 0}
+    propertyPath: DrunkenessVelocityMultiplier
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
     propertyPath: DrunkenessTimeProbability.m_Curve.Array.size
+    value: 2
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[0].time
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[0].value
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[0].inSlope
+    value: -0.011547367
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[0].outSlope
+    value: -0.011547367
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[0].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[0].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[0].inWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[0].outWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[1].time
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[1].value
+    value: -0.007075472
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[1].inSlope
+    value: -0.0012815167
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[1].outSlope
+    value: -0.0012815167
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[1].tangentMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[1].weightedMode
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[1].inWeight
+    value: 0
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: DrunkenessTimeProbability.m_Curve.Array.data[1].outWeight
     value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
@@ -103,5 +239,5 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: DrunkenessTimeMultiplier
-    value: 0
+    value: 1
     objectReference: {fileID: 0}
