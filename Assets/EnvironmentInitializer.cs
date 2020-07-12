@@ -3,8 +3,12 @@
 public class EnvironmentInitializer : MonoBehaviour
 {
     public EnvironmentDestroyer Destroyer;
-    public void Spawn(EnvironmentSpawner s)
+    /// <summary>
+    /// Spawns next environment, and prepares last for destruction
+    /// </summary>
+    /// <param name="source"></param>
+    public void Spawn(EnvironmentSpawner source)
     {
-        Destroyer.SetObjectToDestroy(s);
+        Destroyer.SetObjectToDestroy(source);
     }
 }
