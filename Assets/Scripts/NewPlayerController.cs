@@ -17,19 +17,35 @@ public class NewPlayerController : MonoBehaviour
 
     public Vector3 input;
     Rigidbody _rb;
-    public Healthbar Fartbar;
 
+    public Healthbar FartJuice;
+    public Healthbar FartCooldown;
+    public float FartCooldownFactor;
+    public int StartingFartJuice;
 
     // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _rb.velocity = Vector3.left * StartSpeed;
-        Fartbar.health = 100;
+        FartJuice.health = StartingFartJuice;
     }
 
     void FixedUpdate()
     {
+        // LOSE CONDITION: fartmeter is filled up, shitting your pants
+        if (FartJuice.health >= FartJuice.maximumHealth)
+        {
+            // for now, this does nothing apart from stopping time 
+            Time.timeScale = 0.0f;
+        }
+
+        // LOSE CONDITION: if you fart too quick 
+        if (FartCooldown.health >= FartCooldown.maximumHealth)
+        {
+            Time.timeScale = 0.0f;
+        }
+
         ApplyFriction();
         input = new Vector3(
             -Input.GetAxisRaw("Horizontal"),
@@ -54,12 +70,17 @@ public class NewPlayerController : MonoBehaviour
     private void Move(Vector3 direction, bool boost)
     {
         Debug.Log($"Moving: {direction}");
-        _rb.AddForce(direction * Force * Time.deltaTime * (boost ? BoostForce : 1), ForceMode.Acceleration);
+        float boostFactor = 1;
 
-        if (boost)
+        // if fartbar is lower than 5/100, no boost possible
+        if (boost && FartJuice.health >= 5)
         {
-            Fartbar.health -= 1;
+            boostFactor = BoostForce;
+            FartJuice.SetHealth(FartJuice.health - 1); // deplete fartmeter by boosting
+            FartCooldown.SetHealth(FartCooldown.health + FartCooldownFactor); // fill up cooldown bar by boosting
         }
+
+        _rb.AddForce(direction * Force * Time.deltaTime * boostFactor, ForceMode.Acceleration);
     }
 
     private void RestrictZLocation()
