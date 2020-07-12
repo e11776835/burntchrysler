@@ -257,7 +257,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ZLocationMinMax: {x: -1, y: 1}
-  Force: 200
+  Force: 20000
   BoostForce: 10
   StartSpeed: 2
   MaxSpeed: 3

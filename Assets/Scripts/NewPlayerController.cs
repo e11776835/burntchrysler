@@ -55,6 +55,11 @@ public class NewPlayerController : MonoBehaviour
     {
         Debug.Log($"Moving: {direction}");
         _rb.AddForce(direction * Force * Time.deltaTime * (boost ? BoostForce : 1), ForceMode.Acceleration);
+
+        if (boost)
+        {
+            Fartbar.health -= 1;
+        }
     }
 
     private void RestrictZLocation()
