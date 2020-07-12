@@ -20,12 +20,14 @@ public class NewPlayerController : MonoBehaviour
     [SerializeField] private float _drunk;
     private Vector3 _input;
     private Rigidbody _rb;
+    [SerializeField] private Healthbar Fartbar;
     [Tooltip("Affects how intense drunk velocity changes will be")]
     [SerializeField] private AnimationCurve DrunkenessVelocityIntensity;
     [Tooltip("Multiplies the animation curve times")]
     [SerializeField] private int DrunkenessVelocityMultiplier;
     [Tooltip("How much time there is between velocity changes")]
     [SerializeField] private AnimationCurve DrunkenessTimeProbability;
+
     [Tooltip("Multiplies the animation curve times")]
     [SerializeField] private int DrunkenessTimeMultiplier;
 
@@ -48,8 +50,8 @@ public class NewPlayerController : MonoBehaviour
         // LOSE CONDITION: fartmeter is filled up, shitting your pants
         if (FartJuice.health >= FartJuice.maximumHealth)
         {
-            // for now, this does nothing apart from stopping time 
-            Time.timeScale = 0.0f;
+            GameManager.EndGame();
+            
         }
 
         // LOSE CONDITION: if you fart too quick 
@@ -62,7 +64,7 @@ public class NewPlayerController : MonoBehaviour
         DrunkMovement();
         ApplyFriction();
         _input = new Vector3(
-            -Input.GetAxisRaw("Horizontal"),
+            -1,
             0,
             -Input.GetAxisRaw("Vertical"));
 
@@ -90,6 +92,11 @@ public class NewPlayerController : MonoBehaviour
         var startTime = Time.time;
         float timeUntilNext = DrunkenessTimeProbability.Evaluate(_drunk) * DrunkenessTimeMultiplier;
         timeUntilNext = UnityEngine.Random.Range(timeUntilNext, DrunkenessTimeMultiplier);
+        if(timeUntilNext < 0.1f)
+        {
+            Debug.LogError("Time between velocity changes too short!");
+            yield return null;
+        }
         var nextVelocityTime = startTime + timeUntilNext;
         var beforeVel = _rb.velocity;
         var direction = UnityEngine.Random.insideUnitCircle;

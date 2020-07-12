@@ -39,7 +39,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: BoostForce
-    value: 27.27
+    value: 500
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: StartSpeed
@@ -51,7 +51,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: BoostSpeedMaxSpeedMultiplier
-    value: 9.25
+    value: 1.2
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: MaxZSpeed
@@ -67,11 +67,7 @@ Preset:
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: _drunk
-    value: 1
-    objectReference: {fileID: 0}
-  - target: {fileID: 0}
-    propertyPath: Fartbar
-    value: 
+    value: 0
     objectReference: {fileID: 0}
   - target: {fileID: 0}
     propertyPath: DrunkenessVelocityIntensity.m_Curve.Array.size
@@ -240,4 +236,28 @@ Preset:
   - target: {fileID: 0}
     propertyPath: DrunkenessTimeMultiplier
     value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: FartJuice
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: FartCooldown
+    value: 
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: FartCooldownFactor
+    value: 2.5
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: StartingFartJuice
+    value: 25
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: HorizontalDrunkIntensity
+    value: 1
+    objectReference: {fileID: 0}
+  - target: {fileID: 0}
+    propertyPath: VerticalDrunkIntensity
+    value: 0.2
     objectReference: {fileID: 0}
