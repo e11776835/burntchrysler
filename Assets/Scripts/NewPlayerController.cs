@@ -17,7 +17,7 @@ public class NewPlayerController : MonoBehaviour
 
     public Vector3 input;
     Rigidbody _rb;
-    Healthbar Fartbar;
+    public Healthbar Fartbar;
 
 
     // Start is called before the first frame update
@@ -25,6 +25,7 @@ public class NewPlayerController : MonoBehaviour
     {
         _rb = GetComponent<Rigidbody>();
         _rb.velocity = Vector3.left * StartSpeed;
+        Fartbar.health = 100;
     }
 
     void FixedUpdate()
