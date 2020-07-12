@@ -20,7 +20,6 @@ public class NewPlayerController : MonoBehaviour
     [SerializeField] private float _drunk;
     private Vector3 _input;
     private Rigidbody _rb;
-    [SerializeField] private Healthbar Fartbar;
     [Tooltip("Affects how intense drunk velocity changes will be")]
     [SerializeField] private AnimationCurve DrunkenessVelocityIntensity;
     [Tooltip("Multiplies the animation curve times")]
