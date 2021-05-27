@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Security.Cryptography;
+using UnityEngine;
 
 public class EnvironmentInitializer : MonoBehaviour
 {
@@ -10,5 +12,11 @@ public class EnvironmentInitializer : MonoBehaviour
     public void Spawn(EnvironmentSpawner source)
     {
         Destroyer.SetObjectToDestroy(source);
+    }
+
+    internal void SetPosition(Vector3 pos)
+    {
+        transform.position = pos;
+        Destroyer.LastEnvironment.transform.position = new Vector3(pos.x + Destroyer.LastEnvironment.EnvironmentPrefabLength, pos.y, pos.z);
     }
 }

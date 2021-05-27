@@ -5,6 +5,7 @@ using UnityEngine;
 
 public class NewPlayerController : MonoBehaviour
 {
+    public float CurrentSpeed = 1;
     [Tooltip("Min and max value of the player's position.z value ")]
     public Vector2 ZLocationMinMax;
     public float
@@ -37,40 +38,72 @@ public class NewPlayerController : MonoBehaviour
     public int StartingFartJuice;
 
     // Start is called before the first frame update
+    public static NewPlayerController Instance { get; private set; }
     void Start()
     {
+
+        if (Instance != null)
+        {
+            Debug.LogError("Too many berts in scene");
+            return;
+        }
+        Instance = this;
         _rb = GetComponent<Rigidbody>();
         _rb.velocity = Vector3.left * StartSpeed;
         FartJuice.health = StartingFartJuice;
+        Instance = this;
+    }
+    private void Update()
+    {
+        CheckLoseConditions();
     }
 
+    internal void Reset()
+    {
+        transform.position = Vector3.zero;
+    }
     void FixedUpdate()
     {
+        //if (!GameManagerBehaviour.GameInProgress) return;
 
+        DrunkMovement();
+        ApplyFriction();
+        _input = new Vector3(
+            -CurrentSpeed,
+            0,
+            -Input.GetAxisRaw("Vertical"));
+
+        Debug.Log("Input: " + _input.z);
+        Move(_input, Input.GetKey(BoostKey));
+        //RestrictZLocation();
+        RestrictVelocity();
+    }
+
+    private void CheckLoseConditions()
+    {
         // LOSE CONDITION: fartmeter is filled up, shitting your pants
         if (FartJuice.health >= FartJuice.maximumHealth)
         {
-            GameManager.EndGame();
-            
+            GameManagerBehaviour.EndGame("You shat yourself!");
         }
 
         // LOSE CONDITION: if you fart too quick 
         if (FartCooldown.health >= FartCooldown.maximumHealth)
         {
-            Time.timeScale = 0.0f;
+            GameManagerBehaviour.EndGame("You shat yourself!");
         }
 
+        //LOSE CONDITION: if you lose balance
+        if (LostBalance())
+        {
+            GameManagerBehaviour.EndGame("You lost balance!");
+        }
 
-        DrunkMovement();
-        ApplyFriction();
-        _input = new Vector3(
-            -1,
-            0,
-            -Input.GetAxisRaw("Vertical"));
-
-        Move(_input, Input.GetKey(BoostKey));
-        RestrictZLocation();
-        RestrictVelocity();
+        //LOSE CONDITION: if you stop running
+        if (_rb.velocity.sqrMagnitude < .1f)
+        {
+            GameManagerBehaviour.EndGame("You got too tired!");
+        }
     }
 
     private Coroutine _drunkVelocityCoroutine;
@@ -149,6 +182,7 @@ public class NewPlayerController : MonoBehaviour
         pos.z = Mathf.Clamp(transform.position.z, ZLocationMinMax.x, ZLocationMinMax.y);
         transform.position =  pos;
     }
+    private bool LostBalance() => transform.position.z < ZLocationMinMax.x || transform.position.z > ZLocationMinMax.y;
 
     private void RestrictVelocity()
     {

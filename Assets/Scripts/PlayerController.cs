@@ -1,10 +1,12 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     public float speed, startSpeed, accelerationFactor, maxSpeed;
+
     Rigidbody myRigidBody;
     Vector3 change, prevChange;
 
