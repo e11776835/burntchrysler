@@ -2,10 +2,11 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
-
-public class NewPlayerController : MonoBehaviour
+/// <summary>
+/// This script is attached to the player and controls the player's movement
+/// </summary>
+public class BertController : MonoBehaviour
 {
-    public float CurrentSpeed = 1;
     [Tooltip("Min and max value of the player's position.z value ")]
     public Vector2 ZLocationMinMax;
     public float
@@ -17,20 +18,10 @@ public class NewPlayerController : MonoBehaviour
         MaxZSpeed = 10, 
         Friction = 10;
     public KeyCode BoostKey;
-    [Range(0,1)]
-    [SerializeField] private float _drunk;
     private Vector3 _input;
     private Rigidbody _rb;
     [SerializeField] private Healthbar Fartbar;
-    [Tooltip("Affects how intense drunk velocity changes will be")]
-    [SerializeField] private AnimationCurve DrunkenessVelocityIntensity;
-    [Tooltip("Multiplies the animation curve times")]
-    [SerializeField] private int DrunkenessVelocityMultiplier;
-    [Tooltip("How much time there is between velocity changes")]
-    [SerializeField] private AnimationCurve DrunkenessTimeProbability;
-
-    [Tooltip("Multiplies the animation curve times")]
-    [SerializeField] private int DrunkenessTimeMultiplier;
+    [SerializeField] private DrunkController DrunkController;
 
     public Healthbar FartJuice;
     public Healthbar FartCooldown;
@@ -38,7 +29,8 @@ public class NewPlayerController : MonoBehaviour
     public int StartingFartJuice;
 
     // Start is called before the first frame update
-    public static NewPlayerController Instance { get; private set; }
+    public static BertController Instance { get; private set; }
+    private float _currentSpeed = 1;
     void Start()
     {
 
@@ -49,10 +41,17 @@ public class NewPlayerController : MonoBehaviour
         }
         Instance = this;
         _rb = GetComponent<Rigidbody>();
-        _rb.velocity = Vector3.left * StartSpeed;
-        FartJuice.health = StartingFartJuice;
+        ResetControllers();
         Instance = this;
     }
+
+    private void ResetControllers()
+    {
+        _rb.velocity = Vector3.left * StartSpeed;
+        FartJuice.health = StartingFartJuice;
+        DrunkController.Reset();
+    }
+
     private void Update()
     {
         CheckLoseConditions();
@@ -64,39 +63,45 @@ public class NewPlayerController : MonoBehaviour
     }
     void FixedUpdate()
     {
+        Debug.Log("Input: " + _input.z);
+        Move(_input, Input.GetKey(BoostKey));
         //if (!GameManagerBehaviour.GameInProgress) return;
 
-        DrunkMovement();
         ApplyFriction();
         _input = new Vector3(
-            -CurrentSpeed,
+            -_currentSpeed,
             0,
             -Input.GetAxisRaw("Vertical"));
 
-        Debug.Log("Input: " + _input.z);
-        Move(_input, Input.GetKey(BoostKey));
         //RestrictZLocation();
         RestrictVelocity();
+        
+        DrunkController.DrunkMovement(_rb);
     }
 
     private void CheckLoseConditions()
     {
+        if(!GameManagerBehaviour.Instance.GameInProgress)
+        {
+            return;
+        }
         // LOSE CONDITION: fartmeter is filled up, shitting your pants
         if (FartJuice.health >= FartJuice.maximumHealth)
         {
-            GameManagerBehaviour.EndGame("You shat yourself!");
+            GameManagerBehaviour.EndGame("You shat yourself! Make sure to fart from time to time. Don't worry, nobody will know it's you.");
         }
 
         // LOSE CONDITION: if you fart too quick 
         if (FartCooldown.health >= FartCooldown.maximumHealth)
         {
-            GameManagerBehaviour.EndGame("You shat yourself!");
+            GameManagerBehaviour.EndGame("You shat yourself! Don't fart too hard; for once Icarus taught us not to fly too close to the sun.");
         }
 
         //LOSE CONDITION: if you lose balance
         if (LostBalance())
         {
-            GameManagerBehaviour.EndGame("You lost balance!");
+            Debug.Log("Lost balance!");
+            GameManagerBehaviour.EndGame("You lost balance! Maybe you should drink less, you boozebag.");
         }
 
         //LOSE CONDITION: if you stop running
@@ -104,49 +109,6 @@ public class NewPlayerController : MonoBehaviour
         {
             GameManagerBehaviour.EndGame("You got too tired!");
         }
-    }
-
-    private Coroutine _drunkVelocityCoroutine;
-    public float HorizontalDrunkIntensity = 1, VerticalDrunkIntensity = .2f;
-
-    /// <summary>
-    /// Changes the velocity at random intervals in random directions
-    /// </summary>
-    private void DrunkMovement()
-    {
-        if(_drunkVelocityCoroutine == null)
-        {
-            _drunkVelocityCoroutine = StartCoroutine(DrunkVelocityChange());
-        }
-    }
-
-    private IEnumerator DrunkVelocityChange()
-    {
-        var startTime = Time.time;
-        float timeUntilNext = DrunkenessTimeProbability.Evaluate(_drunk) * DrunkenessTimeMultiplier;
-        timeUntilNext = UnityEngine.Random.Range(timeUntilNext, DrunkenessTimeMultiplier);
-        if(timeUntilNext < 0.1f)
-        {
-            Debug.LogError("Time between velocity changes too short!");
-            yield return null;
-        }
-        var nextVelocityTime = startTime + timeUntilNext;
-        var beforeVel = _rb.velocity;
-        var direction = UnityEngine.Random.insideUnitCircle;
-        //Velocity will always be on right side of bert (x-)
-        direction.x = Mathf.Abs(direction.x) * -1;
-        direction = Vector2.Scale(direction, new Vector2(HorizontalDrunkIntensity, VerticalDrunkIntensity));
-        Debug.Log($"Changing velocity in direction: {direction}");
-        var intensity = DrunkenessVelocityIntensity.Evaluate(_drunk) * DrunkenessVelocityMultiplier;
-        direction *= intensity;
-        Vector3 newVel = new Vector3(direction.x, 0, direction.y);
-        _rb.AddForce(newVel * 100);
-        while (Time.time < nextVelocityTime)
-        {
-            //check next timer every .5 secs
-            yield return new WaitForSeconds(.5f);
-        }
-        _drunkVelocityCoroutine = StartCoroutine(DrunkVelocityChange());
     }
 
     private void ApplyFriction()
@@ -158,7 +120,7 @@ public class NewPlayerController : MonoBehaviour
 
     private void Move(Vector3 direction, bool boost)
     {
-        Debug.Log($"Moving: {direction}");
+        // Debug.Log($"Moving: {direction}");
         float boostFactor = 1;
         
 
@@ -182,12 +144,16 @@ public class NewPlayerController : MonoBehaviour
         pos.z = Mathf.Clamp(transform.position.z, ZLocationMinMax.x, ZLocationMinMax.y);
         transform.position =  pos;
     }
-    private bool LostBalance() => transform.position.z < ZLocationMinMax.x || transform.position.z > ZLocationMinMax.y;
+    private bool LostBalance() 
+    {
+        Debug.Log("DEBUGGING BALANCE:\nPos z: " + transform.position.z + " Vel z: " + _rb.velocity.z + "Z min/max: " + ZLocationMinMax.x + "/" + ZLocationMinMax.y);
+        return transform.position.z < ZLocationMinMax.x || transform.position.z > ZLocationMinMax.y;
+
+    }
 
     private void RestrictVelocity()
     {
         Vector3 vel = _rb.velocity;
-        Debug.Log($"Vel: {vel}");
         vel.x = Mathf.Clamp(vel.x, -MaxSpeed, 0);
         vel.z = Mathf.Clamp(vel.z, -MaxZSpeed, MaxZSpeed);
         _rb.velocity = vel;

@@ -1,5 +1,7 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
 
 public class GameManagerBehaviour : MonoBehaviour
@@ -7,6 +9,8 @@ public class GameManagerBehaviour : MonoBehaviour
     public bool GameInProgress;
 
     public EndGameEvent OnEndGame;
+    public UnityEvent OnStartGame;
+    public UnityEvent OnRequestRestart;
 
     public static GameManagerBehaviour Instance;
 
@@ -23,20 +27,24 @@ public class GameManagerBehaviour : MonoBehaviour
         Instance = this;
         StartGame();
     }
+
     public void StartGame()
     {
+        OnStartGame.Invoke();
+        Time.timeScale = 1;
         GameInProgress = true;
-        NewPlayerController.Instance.Reset();
+        BertController.Instance.Reset();
         EnvironmentSpawner.Reset();
     }
 
-    public void Update()
+    public void Restart()
     {
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            Debug.Log("restarted");
-            StartGame();
-        }
+        Debug.Log("restarted");
+        //Hard reset : reload scene. should probably reset all variables but this is a lot easier who gives a shit
+        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        //TODO: reset all variables
+        // OnRequestRestart.Invoke();
+        // StartGame();
     }
 
     internal static void EndGame(string message) => Instance.EndGame(new EndGameEventArgs(message, ScoreController.GetScore()));
@@ -49,6 +57,6 @@ public class GameManagerBehaviour : MonoBehaviour
         OnEndGame.Invoke(args);
         GameInProgress = false;
         
-        //Time.timeScale = 0.0f;
+        Time.timeScale = 0.0f;
     }
 }

@@ -10,13 +10,30 @@ public class EndScreenBehaviour : MonoBehaviour
     public GameManagerBehaviour GameManager;
     private void OnEnable()
     {
+        DisableEndScreen();
         GameManager.OnEndGame.AddListener(EnableEndScreen);
+        GameManager.OnRequestRestart.AddListener(DisableEndScreen);
+    }
+
+    public void DisableEndScreen()
+    {
+        EndScreenObject.SetActive(false);
     }
 
     private void EnableEndScreen(EndGameEventArgs args)
     {
-        EndScreenObject.SetActive(true);
         Text.text = args.message;
+        EndScreenObject.SetActive(true);
+    }
+
+    public void Update(){
+        if(Input.GetKeyDown(KeyCode.R)){
+            GameManager.Restart();
+        }
+        if(Input.GetKeyDown(KeyCode.Escape)){
+            
+            Application.Quit();
+        }
     }
 }
 

@@ -11,7 +11,7 @@ public class EnvironmentSpawner : MonoBehaviour
     static EnvironmentInitializer newObj; 
     private void OnTriggerEnter(Collider other)
     {
-        NewPlayerController playerController = other.GetComponentInParent<NewPlayerController>();
+        BertController playerController = other.GetComponentInParent<BertController>();
         if (playerController)
         {
             SpawnNext();
